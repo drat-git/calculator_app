@@ -4,10 +4,22 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _darkTheme = false;
+
+  void _toggleTheme() {
+    setState(() {
+      _darkTheme = !_darkTheme;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,15 +28,34 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      home: const MyHomePage(title: 'Calculator'),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.teal,
+          brightness: Brightness.dark,
+        ),
+      ),
+      themeMode: _darkTheme ? ThemeMode.dark : ThemeMode.light,
+      themeAnimationDuration: const Duration(milliseconds: 250),
+      home: MyHomePage(
+        title: 'Calculator',
+        darkTheme: _darkTheme,
+        onToggleTheme: _toggleTheme,
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    required this.darkTheme,
+    required this.onToggleTheme,
+  });
 
   final String title;
+  final bool darkTheme;
+  final VoidCallback onToggleTheme;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -218,7 +249,19 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          IconButton(
+            key: const Key('themeToggle'),
+            tooltip: widget.darkTheme
+                ? 'Switch to light theme'
+                : 'Switch to dark theme',
+            onPressed: widget.onToggleTheme,
+            icon: Icon(widget.darkTheme ? Icons.light_mode : Icons.dark_mode),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
