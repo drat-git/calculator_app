@@ -233,7 +233,10 @@ class _MyHomePageState extends State<MyHomePage> {
             overlayColor: colors.primary,
             elevation: 2,
           ),
-          child: Text(value, semanticsLabel: _buttonLabel(value)),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(value, semanticsLabel: _buttonLabel(value)),
+          ),
         ),
       ),
     );
@@ -252,60 +255,69 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 440),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SwitchListTile(
-                    key: const Key('themeToggle'),
-                    title: const Text('Dark mode'),
-                    value: widget.darkTheme,
-                    onChanged: (_) => widget.onToggleTheme(),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: colors.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final availableHeight = constraints.maxHeight - 32;
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: SizedBox(
+                    height: availableHeight < 600 ? 600 : availableHeight,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(
-                          height: 80,
-                          width: double.infinity,
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              _display,
-                              key: const Key('calculatorDisplay'),
-                              style: TextStyle(
-                                fontSize: 64,
-                                fontWeight: FontWeight.w500,
-                                color: colors.onSurface,
+                        SwitchListTile(
+                          key: const Key('themeToggle'),
+                          title: const Text('Dark mode'),
+                          value: widget.darkTheme,
+                          onChanged: (_) => widget.onToggleTheme(),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: colors.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                _display,
+                                key: const Key('calculatorDisplay'),
+                                style: TextStyle(
+                                  fontSize: 64,
+                                  fontWeight: FontWeight.w500,
+                                  color: colors.onSurface,
+                                ),
                               ),
                             ),
                           ),
                         ),
+                        const SizedBox(height: 20),
+                        for (final row in rows)
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                for (final value in row) _buildButton(value),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  for (final row in rows)
-                    Row(
-                      children: [for (final value in row) _buildButton(value)],
-                    ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

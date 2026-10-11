@@ -20,6 +20,22 @@ void expectDisplay(WidgetTester tester, String value) {
 }
 
 void main() {
+  testWidgets('Keypad fills the available height on a tall phone', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(400, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+    final bottom = tester
+        .getBottomLeft(find.byKey(const ValueKey('button0')))
+        .dy;
+    expect(bottom, greaterThan(870));
+    expect(bottom, lessThanOrEqualTo(900));
+    expect(tester.takeException(), isNull);
+  });
   final calculations = <String, List<String>>{
     '12': ['1', '2'],
     '20': ['8', '+', '1', '2', '='],
@@ -159,6 +175,8 @@ void main() {
       isFalse,
     );
     expect(Theme.of(tester.element(page)).brightness, Brightness.light);
+    await tester.ensureVisible(find.byKey(const Key('themeToggle')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('themeToggle')));
     await tester.pumpAndSettle();
     expect(Theme.of(tester.element(page)).brightness, Brightness.dark);
@@ -169,6 +187,8 @@ void main() {
     expectDisplay(tester, '7');
     await press(tester, ['2', '=']);
     expectDisplay(tester, '9');
+    await tester.ensureVisible(find.byKey(const Key('themeToggle')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('themeToggle')));
     await tester.pumpAndSettle();
     expect(Theme.of(tester.element(page)).brightness, Brightness.light);

@@ -30,6 +30,10 @@ The submission copy is named `DarshRathi_CalculatorApp.apk`.
 - **Button feedback:** every keypad button uses the same Material ink ripple and
   150 ms button animation.
 
+The display and keypad rows share the available screen height so the calculator
+fills a tall phone vertically. Short screens can scroll, and long button labels
+scale down when needed.
+
 ## Calculation rules
 
 The calculator evaluates operations from left to right. A new operator finishes
@@ -90,7 +94,7 @@ additional application packages.
 Verification completed on the provided Android 16 (API 36) emulator:
 
 - `flutter analyze`: no issues.
-- `flutter test`: all 18 widget tests passed.
+- `flutter test`: all 19 widget tests passed.
 - Android integration tests: both tests passed, including real portrait-to-landscape
   rotation with calculation state preserved.
 - The renamed release APK was installed and launched on the emulator. Android
@@ -101,3 +105,7 @@ Verification completed on the provided Android 16 (API 36) emulator:
 
 Screen-reader labels and target sizes were checked with Flutter's semantics
 guidelines. A spoken TalkBack session was not performed.
+
+The current release APK predates the caption removal, labeled theme switch, and
+expanded layout. These UI revisions have been verified in debug mode; a new
+release APK is deferred at the user's request.

@@ -58,6 +58,7 @@ void main() {
     expectDisplay(tester, '1234567890');
     await press(tester, ['AC', '7', '+']);
     await tester.ensureVisible(find.byKey(const Key('themeToggle')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('themeToggle')));
     await tester.pumpAndSettle();
     expect(
@@ -68,6 +69,7 @@ void main() {
     await press(tester, ['2', '=']);
     expectDisplay(tester, '9');
     await tester.ensureVisible(find.byKey(const Key('themeToggle')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('themeToggle')));
     await tester.pumpAndSettle();
     expect(
