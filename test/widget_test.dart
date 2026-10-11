@@ -153,10 +153,19 @@ void main() {
     await tester.pumpWidget(const MyApp());
     await press(tester, ['7', '+']);
     final page = find.byType(MyHomePage);
+    expect(find.text('Dark mode'), findsOneWidget);
+    expect(
+      tester.widget<SwitchListTile>(find.byKey(const Key('themeToggle'))).value,
+      isFalse,
+    );
     expect(Theme.of(tester.element(page)).brightness, Brightness.light);
     await tester.tap(find.byKey(const Key('themeToggle')));
     await tester.pumpAndSettle();
     expect(Theme.of(tester.element(page)).brightness, Brightness.dark);
+    expect(
+      tester.widget<SwitchListTile>(find.byKey(const Key('themeToggle'))).value,
+      isTrue,
+    );
     expectDisplay(tester, '7');
     await press(tester, ['2', '=']);
     expectDisplay(tester, '9');

@@ -23,7 +23,7 @@ The submission copy is named `DarshRathi_CalculatorApp.apk`.
 
 ## Selected features
 
-- **Theme toggle:** the app bar control switches all calculator surfaces between
+- **Theme toggle:** the labeled Dark mode switch changes all calculator surfaces between
   light and dark themes with a 250 ms transition. Calculation state is preserved.
 - **All clear:** AC resets the operand, accumulator, pending operator, input phase,
   and result phase. The display returns to 0.

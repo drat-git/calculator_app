@@ -250,19 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            key: const Key('themeToggle'),
-            tooltip: widget.darkTheme
-                ? 'Switch to light theme'
-                : 'Switch to dark theme',
-            onPressed: widget.onToggleTheme,
-            icon: Icon(widget.darkTheme ? Icons.light_mode : Icons.dark_mode),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -272,6 +260,14 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  SwitchListTile(
+                    key: const Key('themeToggle'),
+                    title: const Text('Dark mode'),
+                    value: widget.darkTheme,
+                    onChanged: (_) => widget.onToggleTheme(),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
