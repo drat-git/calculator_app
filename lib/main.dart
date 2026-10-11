@@ -49,9 +49,22 @@ class _MyHomePageState extends State<MyHomePage> {
       _enterDigit(value);
     } else if (value == '=') {
       _showResult();
-    } else if (value != 'AC') {
+    } else if (value == 'AC') {
+      _clear();
+    } else {
       _chooseOperator(value);
     }
+  }
+
+  void _clear() {
+    setState(() {
+      _input = '';
+      _total = null;
+      _operator = null;
+      _waitingForInput = true;
+      _resultShown = false;
+    });
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
   }
 
   void _enterDigit(String digit) {

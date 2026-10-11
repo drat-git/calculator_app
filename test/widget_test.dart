@@ -17,6 +17,23 @@ void expectDisplay(WidgetTester tester, String value) {
 }
 
 void main() {
+  testWidgets('AC clears digits, pending operations and results', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const MyApp());
+    for (final sequence in [
+      ['1', '2'],
+      ['9', '+'],
+      ['2', '×', '3', '='],
+    ]) {
+      await press(tester, sequence);
+      await press(tester, ['AC']);
+      expectDisplay(tester, '0');
+      await press(tester, ['2', '×', '3', '=']);
+      expectDisplay(tester, '6');
+      await press(tester, ['AC']);
+    }
+  });
   testWidgets('Operations use a running total from left to right', (
     tester,
   ) async {
