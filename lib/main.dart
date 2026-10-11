@@ -212,31 +212,28 @@ class _MyHomePageState extends State<MyHomePage> {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(4),
-        child: Semantics(
-          label: _buttonLabel(value),
-          child: ElevatedButton(
-            key: ValueKey('button$value'),
-            onPressed: () => _pressButton(value),
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(48, 72),
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              backgroundColor: isOperator
-                  ? colors.primaryContainer
-                  : colors.surfaceContainerHigh,
-              foregroundColor: isOperator
-                  ? colors.onPrimaryContainer
-                  : colors.onSurface,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              textStyle: const TextStyle(fontSize: 26),
-              animationDuration: const Duration(milliseconds: 150),
-              splashFactory: InkRipple.splashFactory,
-              overlayColor: colors.primary,
-              elevation: 2,
+        child: ElevatedButton(
+          key: ValueKey('button$value'),
+          onPressed: () => _pressButton(value),
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(48, 72),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            backgroundColor: isOperator
+                ? colors.primaryContainer
+                : colors.surfaceContainerHigh,
+            foregroundColor: isOperator
+                ? colors.onPrimaryContainer
+                : colors.onSurface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: ExcludeSemantics(child: Text(value)),
+            textStyle: const TextStyle(fontSize: 26),
+            animationDuration: const Duration(milliseconds: 150),
+            splashFactory: InkRipple.splashFactory,
+            overlayColor: colors.primary,
+            elevation: 2,
           ),
+          child: Text(value, semanticsLabel: _buttonLabel(value)),
         ),
       ),
     );
