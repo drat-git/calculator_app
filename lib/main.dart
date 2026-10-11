@@ -281,11 +281,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          'Left-to-right calculation',
-                          style: TextStyle(color: colors.onSurfaceVariant),
-                        ),
-                        const SizedBox(height: 16),
                         SizedBox(
                           height: 80,
                           width: double.infinity,
