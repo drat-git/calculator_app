@@ -1,30 +1,49 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:calculator_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:calculator_app/main.dart';
+Future<void> press(WidgetTester tester, List<String> buttons) async {
+  for (final button in buttons) {
+    await tester.tap(find.byKey(ValueKey('button$button')));
+    await tester.pumpAndSettle();
+  }
+}
+
+void expectDisplay(WidgetTester tester, String value) {
+  final display = tester.widget<Text>(
+    find.byKey(const Key('calculatorDisplay')),
+  );
+  expect(display.data, value);
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Operations use a running total from left to right', (
+    tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
+    await press(tester, ['2', '+', '3', '×']);
+    expectDisplay(tester, '5');
+    await press(tester, ['4', '=']);
+    expectDisplay(tester, '20');
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('Operators replace and equals waits for an operand', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const MyApp());
+    await press(tester, ['9', '+', '×', '=', '2', '=']);
+    expectDisplay(tester, '18');
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Repeated equals is ignored and a digit starts fresh', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const MyApp());
+    await press(tester, ['2', '+', '3', '=', '=']);
+    expectDisplay(tester, '5');
+    await press(tester, ['8']);
+    expectDisplay(tester, '8');
+    await press(tester, ['÷', '2', '=']);
+    expectDisplay(tester, '4');
   });
 }

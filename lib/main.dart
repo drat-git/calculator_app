@@ -31,9 +31,116 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final String _display = '0';
+  String _input = '';
+  double? _total;
+  String? _operator;
+  bool _waitingForInput = true;
+  bool _resultShown = false;
 
-  void _pressButton(String value) {}
+  String get _display {
+    if (_input.isNotEmpty) return _input;
+    final value = _total ?? 0;
+    final text = value.toString();
+    return text.endsWith('.0') ? text.substring(0, text.length - 2) : text;
+  }
+
+  void _pressButton(String value) {
+    if (int.tryParse(value) != null) {
+      _enterDigit(value);
+    } else if (value == '=') {
+      _showResult();
+    } else if (value != 'AC') {
+      _chooseOperator(value);
+    }
+  }
+
+  void _enterDigit(String digit) {
+    setState(() {
+      if (_resultShown) {
+        _total = null;
+        _operator = null;
+      }
+      if (_waitingForInput || _resultShown || _input == '0') {
+        _input = digit;
+      } else {
+        _input += digit;
+      }
+      _waitingForInput = false;
+      _resultShown = false;
+    });
+  }
+
+  double? _calculate(double left, String operation, double right) {
+    if (operation == '÷' && right == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cannot divide by zero. Press AC to start again.'),
+        ),
+      );
+      return null;
+    }
+    final double result;
+    switch (operation) {
+      case '+':
+        result = left + right;
+      case '−':
+        result = left - right;
+      case '×':
+        result = left * right;
+      default:
+        result = left / right;
+    }
+    if (!result.isFinite) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Number is too large. Press AC to reset.'),
+        ),
+      );
+      return null;
+    }
+    return result;
+  }
+
+  void _chooseOperator(String operation) {
+    if (_waitingForInput) {
+      if (_total != null) {
+        setState(() {
+          _operator = operation;
+          _resultShown = false;
+        });
+      }
+      return;
+    }
+    final number = double.parse(_input);
+    final nextTotal = _operator == null
+        ? number
+        : _calculate(_total!, _operator!, number);
+    if (nextTotal == null || !nextTotal.isFinite) return;
+    setState(() {
+      // Finish the pending operation before saving the next one.
+      _total = nextTotal;
+      _operator = operation;
+      _input = '';
+      _waitingForInput = true;
+      _resultShown = false;
+    });
+  }
+
+  void _showResult() {
+    if (_waitingForInput) return;
+    final number = double.parse(_input);
+    final nextTotal = _operator == null
+        ? number
+        : _calculate(_total!, _operator!, number);
+    if (nextTotal == null || !nextTotal.isFinite) return;
+    setState(() {
+      _total = nextTotal;
+      _operator = null;
+      _input = '';
+      _waitingForInput = true;
+      _resultShown = true;
+    });
+  }
 
   String _buttonLabel(String value) {
     switch (value) {
